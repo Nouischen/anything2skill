@@ -1,0 +1,13 @@
+{
+  "name": "anything2skill",
+  "displayName": "anything2skill",
+  "version": "1.0.0",
+  "description": "Distill content you've seen (videos, courses, articles, transcripts) into agent-callable Claude skills. Value pre-check labels each skill honestly; fusion protocol keeps your skill library from bloating (same-source deepen, same-skeleton-across-domains factor, conflicts kept separate). Token-heavy reading runs on a bundled Sonnet subagent; the judgment runs on your model. No DRM circumvention. Anonymous opt-out telemetry.",
+  "author": {
+    "name": "Dr. Yu-Chieh Chen",
+    "url": "https://github.com/Nouischen"
+  },
+  "repository": "https://github.com/Nouischen/anything2skill",
+  "license": "MIT",
+  "keywords": ["skills", "distill", "transcription", "whisper", "fusion", "subagent", "claude-code"]
+}

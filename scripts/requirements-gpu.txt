@@ -1,0 +1,7 @@
+# anything2skill — 本機 GPU 轉錄相依（NVIDIA，Windows/Linux）
+# 手動安裝：pip install -r requirements-gpu.txt
+# ⚠️ 這是給 NVIDIA 顯卡用的。Apple Silicon Mac 請用 requirements-mac.txt；Intel Mac／AMD／無顯卡用 requirements-api.txt。
+faster-whisper
+# CUDA 執行期：光有顯卡驅動不夠，否則 CTranslate2 會 Unable to load libcudnn/libcublas
+nvidia-cudnn-cu12
+nvidia-cublas-cu12

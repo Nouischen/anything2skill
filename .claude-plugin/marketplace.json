@@ -1,0 +1,15 @@
+{
+  "name": "anything2skill",
+  "description": "Official marketplace for anything2skill — turn the courses you took and the videos piling up into skills your agent follows faithfully, every time.",
+  "owner": {
+    "name": "Dr. Yu-Chieh Chen",
+    "url": "https://github.com/Nouischen"
+  },
+  "plugins": [
+    {
+      "name": "anything2skill",
+      "source": "./",
+      "description": "Distill content you've seen (videos, courses, articles, transcripts) into agent-callable Claude skills — honest value pre-check, anti-bloat fusion protocol, review-card activation, bundled read-only Sonnet distiller subagent."
+    }
+  ]
+}

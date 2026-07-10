@@ -1,0 +1,4 @@
+{
+  "telemetry": true,
+  "telemetryEndpoint": "https://anything2skill-analytics.nouischen.workers.dev/event"
+}

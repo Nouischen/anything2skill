@@ -1,0 +1,11 @@
+# anything2skill — Python 相依（只有處理「影片／社群連結」來源才需要；
+# 純文字、文章、現成逐字稿完全用不到，可跳過本檔）
+# 手動安裝：pip install -r requirements.txt（Mac/Linux 用 pip3）
+# 下載音訊（skill 以 python -m yt_dlp 直接呼叫）
+yt-dlp
+
+# 轉錄相依「三選一」，另外裝（技能會依機器自動選對後端）：
+#   NVIDIA 顯卡（Windows/Linux）：pip install -r requirements-gpu.txt   （免費本機）
+#   Apple Silicon Mac（M 系列）： pip install -r requirements-mac.txt   （免費本機）
+#   Intel Mac／AMD／無顯卡：      pip install -r requirements-api.txt   （走付費 OpenAI API）
+# 注意：GPU 檔含 nvidia-* wheel、Mac 檔含 mlx（只在 Apple Silicon），別把它們併進本檔或裝到不對的平台。

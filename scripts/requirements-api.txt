@@ -1,0 +1,4 @@
+# anything2skill — 無 GPU 轉錄相依（走 OpenAI Whisper API）
+# 手動安裝：pip install -r requirements-api.txt
+# 付費、音檔會上傳 OpenAI，需環境變數 OPENAI_API_KEY。
+openai

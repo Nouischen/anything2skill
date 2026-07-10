@@ -1,0 +1,22 @@
+name = "anything2skill-analytics"
+main = "src/worker.js"
+compatibility_date = "2025-01-01"
+
+# 建立 D1 後把 database_id 貼進來（見 README 步驟）
+[[d1_databases]]
+binding = "DB"
+database_name = "anything2skill"
+database_id = "REPLACE-ME-your-d1-database-id"
+
+# 依來源 IP 限流（免費、所有方案可用；period 只能 10 或 60）
+# /event：擋灌假事件；/admin：擋暴力猜密碼
+# namespace_id 與 course2notes（1001/1002）刻意錯開，避免同帳號下限流計數共用
+[[ratelimits]]
+name = "EVENT_LIMITER"
+namespace_id = "2001"
+simple = { limit = 30, period = 60 }
+
+[[ratelimits]]
+name = "ADMIN_LIMITER"
+namespace_id = "2002"
+simple = { limit = 10, period = 60 }

@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>anything2skill｜把上過的課與囤著的影片，變成 AI 幫你落地的技能</title>
+<meta name="description" content="把你信任來源裡的方法，蒸成 Claude Code 可調用的 skill，讓 AI 每次照那套方法做事。在你自己的電腦、你自己的 AI 上跑，作者收不到你的內容。不宣稱讓 AI 變聰明——只賣忠實與一致。">
+<style>
+:root{
+  --accent:#5B4BE0;--accent-d:#4335b8;--ink:#1b1a2b;--muted:#615f74;
+  --bg:#f5f4fb;--panel:#fff;--line:#e6e3f2;--soft:#eeeafd;--dark:#15112e;
+  --shadow:0 18px 40px rgba(21,17,46,.12);
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:-apple-system,"Segoe UI",Roboto,system-ui,"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+  font-size:17.5px;line-height:1.8;-webkit-font-smoothing:antialiased}
+h1,h2,h3{line-height:1.25;letter-spacing:.4px}
+a{color:var(--accent-d);text-decoration:none;font-weight:600}
+a:hover{color:var(--accent)}
+.wrap{max-width:1120px;margin:0 auto;padding:0 28px}
+.accentbar{height:5px;background:linear-gradient(90deg,#5B4BE0,#8a6bf0,#5B4BE0)}
+/* nav */
+nav{position:sticky;top:0;z-index:20;background:rgba(245,244,251,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;height:66px;gap:22px}
+nav .logo{font-weight:900;font-size:19px;color:var(--accent);letter-spacing:0}
+nav .sp{margin-left:auto}
+.langsw{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.langbtn{background:#fff;border:0;padding:8px 13px;font-family:inherit;font-size:13px;font-weight:800;color:var(--muted);cursor:pointer}
+.langbtn.on{background:var(--accent);color:#fff}
+.pillbtn{background:var(--accent);color:#fff;padding:11px 20px;border-radius:11px;font-weight:800;font-size:15px}
+.pillbtn:hover{background:var(--accent-d);color:#fff}
+/* hero */
+.hero{padding:64px 0 46px}
+.hero .grid{display:grid;grid-template-columns:1.05fr .95fr;gap:52px;align-items:center}
+.eyebrow{display:inline-block;background:var(--soft);color:var(--accent-d);font-weight:800;font-size:14px;padding:6px 14px;border-radius:999px;margin-bottom:14px}
+.byline{color:var(--muted);font-size:15px;margin:0 0 18px}
+.byline b{color:var(--accent-d);font-weight:800}
+.hero h1{font-size:clamp(34px,4.6vw,52px);font-weight:900;margin:0 0 20px}
+.hero h1 .u{background:linear-gradient(transparent 62%,#cdc4fb 62%);padding:0 3px}
+.hero p.lead{font-size:19px;color:var(--muted);margin:0 0 30px;max-width:520px}
+.hero .cta{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.ghost{border:2px solid var(--accent);color:var(--accent-d);padding:11px 20px;border-radius:11px;font-weight:800;font-size:15px}
+.ghost:hover{background:var(--soft)}
+.hero .micro{margin-top:20px;font-size:14.5px;color:var(--muted)}
+/* editor frame (inline mock of a distilled SKILL.md — self-contained, no external image) */
+.frame{border-radius:14px;overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--line);background:#fff;transform:rotate(.4deg)}
+.frame .bar{background:#e9e6f6;padding:10px 14px;display:flex;align-items:center;gap:7px}
+.frame .bar i{width:11px;height:11px;border-radius:50%;display:inline-block}
+.frame .bar .u{margin-left:12px;background:#fff;border-radius:7px;padding:4px 12px;font-size:12.5px;color:#8a86a8;flex:1}
+.frame .code{background:var(--dark);color:#d9d4f5;padding:18px 20px;font-family:Consolas,"SF Mono",monospace;font-size:13px;line-height:1.72;overflow-x:auto}
+.frame .code .cm{color:#8f88c9}
+.frame .code .kw{color:#b7a3ff}
+.frame .code .h{color:#fff;font-weight:700}
+.frame .code .no{color:#ff9db0}
+.frame .code .lbl{color:#7ee0c0}
+/* prerequisite: install Claude Code */
+.prereq{background:var(--panel);color:var(--ink);border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:16px;padding:24px 28px;margin:8px 0 0;box-shadow:0 6px 18px rgba(21,17,46,.06)}
+.pq-title{font-size:17px;margin-bottom:18px}
+.pq-opts{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.pq-opt{background:var(--soft);border-radius:14px;padding:18px 20px}
+.pq-h{font-weight:800;font-size:16.5px;margin-bottom:8px;display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.pq-badge{background:var(--accent);color:#fff;font-size:13px;font-weight:900;width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex:none}
+.pq-rec{font-size:12px;color:var(--accent-d);font-weight:800;background:#dcd4fb;padding:3px 9px;border-radius:999px}
+.pq-d{font-size:14.5px;color:var(--muted);margin-bottom:13px}
+.pq-btn{display:inline-block;background:var(--accent);color:#fff;padding:10px 18px;border-radius:11px;font-weight:800;font-size:14.5px}
+.pq-btn:hover{background:var(--accent-d);color:#fff}
+.pq-cmd{margin-bottom:9px}
+.pq-os{display:block;font-size:12.5px;font-weight:800;color:var(--muted);margin-bottom:3px}
+.prereq pre{font-size:13.5px;padding:11px 14px}
+.pq-note{margin-top:16px;font-size:14px;color:var(--muted)}
+@media(max-width:640px){.pq-opts{grid-template-columns:1fr}}
+/* sections */
+section{padding:58px 0}
+.sechead{margin:0 0 6px;font-size:30px;font-weight:900}
+.sesub{color:var(--muted);font-size:17px;margin:0 0 34px}
+.feats{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:22px}
+.feat{display:flex;gap:13px;align-items:flex-start;background:var(--card,#fff);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+.feat .fi{font-size:22px;line-height:1.2;flex:none}
+.feat b{display:block;margin-bottom:2px}
+.feat div{font-size:14.5px;color:var(--muted);line-height:1.6}
+@media(max-width:720px){.feats{grid-template-columns:1fr}}
+/* steps */
+.steps{display:flex;flex-direction:column;gap:18px}
+.step{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:26px 30px;box-shadow:0 4px 14px rgba(21,17,46,.04)}
+.step .top{display:flex;align-items:center;gap:14px;margin-bottom:12px}
+.step .num{width:44px;height:44px;flex:0 0 44px;border-radius:13px;background:var(--accent);color:#fff;font-weight:900;font-size:20px;display:flex;align-items:center;justify-content:center}
+.step h3{margin:0;font-size:20px;flex:1}
+.tag{font-size:13px;font-weight:800;padding:5px 12px;border-radius:999px;white-space:nowrap}
+.tag.cc{background:#e7defb;color:#4a2fb0}
+.tag.review{background:#dbeee2;color:#0a6b45}
+.step p{margin:0 0 12px;color:var(--muted);font-size:16.5px}
+.step p:last-child{margin-bottom:0}
+code.k{background:var(--soft);padding:2px 8px;border-radius:6px;font-family:Consolas,monospace;font-size:.92em;color:var(--accent-d)}
+pre{background:var(--dark);color:#e4dff7;padding:15px 18px;border-radius:12px;overflow-x:auto;font-family:Consolas,"SF Mono",monospace;font-size:14.5px;line-height:1.65;position:relative;margin:0}
+.cmd{display:block;padding-right:64px}
+.copy{position:absolute;top:9px;right:9px;background:var(--accent);color:#fff;border:0;border-radius:8px;padding:5px 12px;font-size:13px;cursor:pointer;font-family:inherit;font-weight:700}
+.copy:hover{background:#8a6bf0}
+/* honest / privacy boxes */
+.honest{background:var(--panel);border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:18px;padding:26px 30px;box-shadow:0 6px 18px rgba(21,17,46,.06)}
+.honest .big{font-size:21px;font-weight:900;margin:0 0 14px;color:var(--ink);line-height:1.4}
+.buys{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:20px}
+.buy{background:var(--soft);border-radius:14px;padding:18px 20px}
+.buy .n{font-weight:800;font-size:16px;margin-bottom:7px;display:flex;gap:9px;align-items:center}
+.buy .d{font-size:14.5px;color:var(--muted);line-height:1.65}
+@media(max-width:720px){.buys{grid-template-columns:1fr}}
+.priv{background:var(--soft);border-radius:18px;padding:26px 30px}
+/* details */
+details{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:4px 26px;margin-bottom:16px}
+details summary{cursor:pointer;font-weight:800;font-size:19px;padding:18px 0;list-style:none;display:flex;align-items:center;gap:10px}
+details summary::-webkit-details-marker{display:none}
+details summary::before{content:"▸";color:var(--accent);transition:transform .2s}
+details[open] summary::before{transform:rotate(90deg)}
+details .body{padding:2px 0 22px;color:var(--muted)}
+.oa-body{padding:2px 0 20px;color:var(--muted);font-size:15px;line-height:1.85}
+.oa-body a{word-break:break-all}
+/* mini：卡片內的次級摺疊 */
+details.mini{background:#fff;border:1px solid var(--line);border-radius:10px;padding:0 14px;margin:12px 0 0}
+details.mini summary{font-size:15px;font-weight:700;padding:11px 0;color:var(--accent-d)}
+details.mini summary::before{font-size:12px}
+details.mini .mini-body{padding:2px 0 13px;font-size:14.5px;color:var(--muted);line-height:1.8}
+details.mini .mini-body a{word-break:break-all}
+details .body table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:15.5px;margin-top:8px}
+details .body th{background:var(--soft);text-align:left;padding:11px 14px}
+details .body td{padding:11px 14px;border-top:1px solid var(--line);color:var(--ink)}
+.flow{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
+.flow span{background:#fff;border:1px solid var(--line);border-radius:10px;padding:9px 14px;font-size:15px}
+.flow .ar{color:var(--accent);align-self:center;font-weight:800}
+.pq-opts-1{grid-template-columns:1fr;margin-top:16px}
+.pq-fine{display:inline-block;margin-top:6px;font-size:13.5px;color:var(--muted)}
+/* footer */
+.foot{background:var(--dark);color:#b7b0d6;padding:38px 0;font-size:14px}
+.foot .disc{max-width:780px;margin:0 auto 14px;line-height:1.75;text-align:center}
+.foot .cc{text-align:center;color:#8f88b8}
+@media(max-width:820px){.hero .grid{grid-template-columns:1fr;gap:34px}.frame{transform:none}nav .sp~a:not(.pillbtn){display:none}}
+</style>
+</head>
+<body>
+<div class="accentbar"></div>
+<nav><div class="wrap">
+  <span class="logo">⚗️ anything2skill</span>
+  <span class="sp"></span>
+  <span class="langsw"><button class="langbtn" data-lang="zh-Hant" onclick="setLang('zh-Hant')">繁中</button><button class="langbtn" data-lang="en" onclick="setLang('en')">EN</button></span>
+  <a href="#honest" data-i18n="nav_honest">誠實聲明</a>
+  <a href="#trust" data-i18n="nav_safety">安全模型</a>
+  <a class="pillbtn" href="#start" data-i18n="nav_start">開始使用</a>
+</div></nav>
+
+<header class="hero"><div class="wrap"><div class="grid">
+  <div>
+    <span class="eyebrow" data-i18n="eyebrow">給會用 Claude Code 的你——就算沒空、也不知道怎麼問</span>
+    <div class="byline" data-i18n="byline">✍️ 作者：<b>陳昱傑醫師</b></div>
+    <h1 data-i18n="hero_h1">上過的課、囤著的影片，<br>讓 AI 幫你變成<span class="u">落地</span>的技能</h1>
+    <p class="lead" data-i18n="hero_lead">那些你學過、卻一直沒真的用起來的方法——影片、課程、文章都行——蒸餾成 Claude Code 可調用的 skill；之後叫 AI 做事，它就照那套步驟、忠實還原你上課教的內容。這專案跑在你自己的電腦、你自己的 AI 上——<b>我們收不到你任何內容。</b></p>
+    <div class="cta">
+      <a class="pillbtn" href="#start" data-i18n="hero_cta1">🚀 三步驟開始</a>
+      <a class="ghost" href="#honest" data-i18n="hero_cta2">🔍 我們不宣稱什麼</a>
+    </div>
+    <div class="micro" data-i18n="hero_micro">桌機用 · 本工具開源免費（需 Claude Code＝Claude 付費方案） · 蒸出 SKILL.md（你自己的方法庫、每步可回滾）</div>
+  </div>
+  <div>
+    <div class="frame">
+      <div class="bar"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i><span class="u" data-i18n="mock_file">product-quadrant-method/SKILL.md</span></div>
+      <div class="code" data-i18n="hero_mock"></div>
+    </div>
+  </div>
+</div></div></header>
+
+<div class="wrap">
+  <div class="prereq" data-i18n="setup"><div class="pq-title">🚀 開始前的準備（一次就好）</div><div class="pq-opts"><div class="pq-opt"><div class="pq-h"><span class="pq-badge">1</span> 裝好 Claude Code</div><div class="pq-d">本工具是 <b>Claude Code</b>（Anthropic 的 AI 工具）的技能；<b>Claude Code 本體需要 Claude 付費方案（Pro 起）</b>——那是 Anthropic 的訂閱費，本工具本身免費開源，蒸餾會消耗方案額度（開跑前會先估給你看）。<b>桌面版 App</b> 最好上手（開啟時選「Local 本機模式」）。<br><a class="pq-btn" href="https://code.claude.com/docs/en/desktop" target="_blank" rel="noopener">下載桌面版 App ↗</a><span class="pq-fine">⚠️ 網頁版（雲端）碰不到你的電腦、不能用。</span><details class="mini"><summary>習慣終端機？用 CLI 裝</summary><div class="mini-body"><div class="pq-cmd"><span class="pq-os">Windows（PowerShell）</span><pre><button class="copy" onclick="cp(this)">複製</button><span class="cmd">irm https://claude.ai/install.ps1 | iex</span></pre></div><div class="pq-cmd"><span class="pq-os">Mac / Linux</span><pre><button class="copy" onclick="cp(this)">複製</button><span class="cmd">curl -fsSL https://claude.ai/install.sh | bash</span></pre></div></div></details></div></div><div class="pq-opt"><div class="pq-h"><span class="pq-badge">2</span> 電腦要有這些</div><div class="pq-d"><b>Node.js、Python 3.10–3.13、ffmpeg、yt-dlp</b>（影片下載用）。這些是給程式用的底層工具——<b>你不用懂、也不用自己裝</b>：缺哪個，安裝時 Claude Code 會幫你裝好（會先問你要不要）。只蒸純文字／逐字稿時，多數用不到。</div></div></div><div class="pq-opts pq-opts-1"><div class="pq-opt"><div class="pq-h"><span class="pq-badge">3</span> 轉錄：只有蒸「影片」時才可能用到</div><div class="pq-d"><b>純文字、文章、逐字稿來源完全不需要轉錄</b>；只有蒸影片、且抓不到官方字幕時，才要把聲音轉成文字。<b>不確定你的電腦是哪種？直接開始就好</b>——Claude Code 會自動偵測，真的需要金鑰時才會停下來照下面教你辦。<br>有 <b>NVIDIA 顯卡</b>（Windows/Linux）或 <b>Apple Silicon Mac</b>（M 系列）→ <b>完全免費、在本機</b>轉錄，音檔不離開你的電腦。<br>其他情況（Intel Mac、AMD/Intel 顯卡、沒有顯卡）→ 需要一把付費的 <b>OpenAI API 金鑰</b>（約 US$0.006／分鐘，音檔會上傳 OpenAI）。<details class="mini"><summary>👉 沒有支援的顯卡？教你拿 OpenAI 金鑰</summary><div class="mini-body">1. 到 <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener">platform.openai.com/api-keys</a> 建一把（需先綁卡、儲值一點額度）。<br>2. 把那串 <code class="k">sk-…</code> 交給 Claude Code，說「幫我設定 OPENAI_API_KEY」。<br>3. 費用參考：一小時的影片大約 US$0.36，做完就不再收。有 NVIDIA／Apple Silicon 的人可略過。</div></details></div></div></div><div class="pq-note">💻 桌機用；請只蒸<b>你信任的來源、你自己合法取得</b>的內容。</div></div>
+</div>
+
+<section id="start"><div class="wrap">
+  <h2 class="sechead" data-i18n="start_head">開始使用：全程在 Claude Code 裡對話</h2>
+  <p class="sesub" data-i18n="start_sub"><b>你不用自己打任何指令、不用懂技術。</b>用平常講話的方式跟 Claude Code 說，它就自己幫你安裝、下載、轉錄、蒸成 skill。過程中會跳出權限確認（裝套件、下載）——按「允許」即可。<b>啟用哪個 skill，永遠要先經過你點頭。</b></p>
+  <div class="steps">
+    <div class="step">
+      <div class="top"><div class="num">1</div><h3 data-i18n="step1_title">叫它安裝（一次就好）</h3><span class="tag cc" data-i18n="tag_cc">🤖 對 Claude Code 說</span></div>
+      <p data-i18n="step1_desc">在 Claude Code 裡打這句，它會自己下載安裝：</p>
+      <pre><button class="copy" onclick="cp(this)" data-i18n="copy">複製</button><span class="cmd" data-i18n="cmd_install">幫我把 https://github.com/Nouischen/anything2skill 裝到 ~/.claude/skills/anything2skill，並把包內 agents/a2s-distiller.md 複製到 ~/.claude/agents/，之後我要用它把內容蒸成 skill</span></pre>
+      <p style="font-size:15px" data-i18n="step1_note">裝好後<b>重開 Claude Code 一次</b>讓技能生效，就一勞永逸。</p>
+    </div>
+    <div class="step">
+      <div class="top"><div class="num">2</div><h3 data-i18n="step2_title">叫它蒸成 skill</h3><span class="tag cc" data-i18n="tag_cc">🤖 對 Claude Code 說</span></div>
+      <p data-i18n="step2_desc">把網址換成你的來源，打這句（也可以直接餵它一份逐字稿或筆記檔）：</p>
+      <pre><button class="copy" onclick="cp(this)" data-i18n="copy">複製</button><span class="cmd" data-i18n="cmd_make">用 anything2skill 把 https://你的影片或文章網址 蒸成 skill</span></pre>
+      <p style="font-size:15px" data-i18n="step2_hint">來源可以是影片、課程、文章、你自己的筆記或逐字稿。它會先做一次<b>「價值預檢」</b>：值得蒸的才蒸，純閒聊沒框架的它會老實勸退你。</p>
+    </div>
+    <div class="step">
+      <div class="top"><div class="num">3</div><h3 data-i18n="step3_title">看過再啟用（鑰匙在你手上）</h3><span class="tag review" data-i18n="tag_review">🖱️ 你來把關</span></div>
+      <p data-i18n="step3_desc">蒸完的 skill 先躺進你的 <b>skill vault</b>（在 Claude Code 的 skills 目錄之外，所以 AI 不會自動拿來用）。它會先給你一張一屏的<b>審核卡</b>（這顆做什麼、步驟、禁區、原話錨點、風險註記，想看全文再展開）；你對某一顆明確說「啟用」，它才把它<b>複製</b>一份進生效目錄（你的正本永遠留在 vault、隨時可回滾），並邀你用真任務試跑一次。<b>沒有你的點頭，任何 skill 都不會生效。</b>之後隨時說一句<b>「我的方法庫」</b>，就能看你擁有哪些方法、要用哪顆、哪顆還沒啟用。<a href="#trust">為什麼這樣設計 ↓</a></p>
+      <p data-i18n="step3_flow"><code class="k">取內容 → 蒸成草稿 → 貼價值標籤 → 融合入庫（可回滾）→ 審核卡 → 你點頭 → 啟用＋當場試跑一次</code>。每次入庫都會存一個回滾點，你的方法庫永遠可以退回上一步。</p>
+    </div>
+  </div>
+</div></section>
+
+<section id="features"><div class="wrap">
+  <h2 class="sechead" data-i18n="feat_head">它幫你做到什麼<span style="font-size:15px;font-weight:500;color:var(--muted)">（不含「讓 AI 變聰明」——見下方誠實聲明）</span></h2>
+  <div class="feats" data-i18n="feats"></div>
+</div></section>
+
+<section id="honest"><div class="wrap">
+  <h2 class="sechead" data-i18n="honest_head">我們不宣稱什麼</h2>
+  <p class="sesub" data-i18n="honest_sub">這是整個工具的立場，先講清楚，你再決定要不要用。</p>
+  <div class="honest" data-i18n="honest_body"></div>
+</div></section>
+
+<section id="privacy"><div class="wrap">
+  <h2 class="sechead" data-i18n="priv_head">隱私：我們只收數字</h2>
+  <div class="priv" data-i18n="priv_body">
+    <p style="margin-top:0"><b>預設會回傳一筆「匿名使用計數」</b>，幫我們判斷有多少人在用。只收：一組本機隨機碼（無法對應到你）、事件（安裝／完成一次蒸餾）、這次蒸了幾個 skill、來源類型（youtube／文字／課程…）、版本、時間。</p>
+    <p style="margin:0"><b>絕對不收：</b>你蒸的內容、標題、網址、任何個資或檔案。程式碼開源可自查。關閉：跟 Claude Code 說「幫我把 anything2skill 的匿名回報關掉」（它會替你設 <code class="k">ANYTHING2SKILL_TELEMETRY=off</code>）。老實說清楚：本包出廠已預填作者的統計端點（只收上述計數），所以<b>預設會回報</b>——關閉就是上面那一句話的事。</p>
+    <p style="margin:12px 0 0">🎙️ <b>關於轉錄：</b>蒸影片時，有 NVIDIA 顯卡或 Apple Silicon Mac 就在本機轉錄、音檔不離開你的電腦；其他情況用 OpenAI API 模式時，音檔會上傳給 OpenAI 轉錄（適用 OpenAI 的 API 資料政策），作者端一樣收不到任何東西。純文字／逐字稿來源不需轉錄。</p>
+  </div>
+  <details id="trust" data-i18n="trust"><summary>🔒 蒸出來的 skill 會不會被惡意來源動手腳？（重要，點開看）</summary><div class="oa-body">先把界線說清楚，因為這關係到你的安全：<br><br>· <b>蒸出來的 skill 是「可執行的 AI 指令」</b>，內容來自你餵的來源。這代表一個惡意來源<b>有可能</b>把壞指令偽裝成一條看起來正常的方法規則，而工具<b>沒辦法保證</b>能把它和真正的方法分開。<br>· 所以本工具的設計是「<b>信任由你賦予，不由工具自動賦予</b>」：新蒸的 skill 一律先躺進 vault（在 skills 目錄之外，AI 不會自動發現、觸發），而且帶 <code class="k">disable-model-invocation: true</code>。<b>啟用＝你看過審核卡（或全文）、對那一顆明確點頭，agent 才把它「複製一份進生效目錄＋移除不觸發設定」</b>——<b>vault 永遠留著正本</b>（所以每步可回滾、刪掉生效那份也不會遺失方法），沒有你的確認它不會啟用任何東西（想要最嚴格？選配 hook 可改成複製進生效目錄一律親手做）。<br>· 任何要改動你既有 skill 的更新，都會先出一份預覽（<code class="k">PENDING-UPDATE</code>），你點頭才套用，不會偷改你信任的東西。<br>· 選配還附一支加固 hook，讓工具自家蒸出的 skill 不會被 agent 自己裝進生效目錄（safe-by-default 防呆）。<br><br><b>但我們必須誠實告訴你這支 hook 的界線：它不是一道能擋住惡意來源的牆。</b>一個被惡意來源當場挾持的 agent，可以繞過它（例如改用別的方式寫檔）——這點我們自己紅隊測過四輪、確認擋不住。<b>防惡意來源真正、也唯一的防線，是你只蒸自己信任的來源＋啟用前自己看一眼。</b>我們不會、也請你不要相信任何「蒸任何來源都安全」的說法。<br><br>一句話：<b>工具幫你產出方法庫，但啟用的鑰匙一直在你手上。</b></div></details>
+</div></section>
+
+<section id="more" style="padding-top:0"><div class="wrap">
+  <details id="how">
+    <summary data-i18n="how_summary">運作原理（想深入了解再看）</summary>
+    <div class="body" data-i18n="how_body">
+      <p>它不是死板的模板，而是讓你的 Claude Code 讀懂內容、照蒸餾規格把方法抽出來。整條流程：</p>
+      <div class="flow"><span>取內容</span><span class="ar">→</span><span>Sonnet 子代理讀長逐字稿起草</span><span class="ar">→</span><span>主模型貼價值標籤</span><span class="ar">→</span><span>融合裁決</span><span class="ar">→</span><span>入庫（git 可回滾）</span><span class="ar">→</span><span>列待審清單</span></div>
+      <p style="margin-top:14px">幾個關鍵：最花 token 的「重讀幾萬字逐字稿」派給便宜的 <b>Sonnet 子代理</b>，你的主模型只做小 token、高判斷的融合裁決（所以建議主模型用 <b>Opus 以上</b>求穩，設 Sonnet 也能跑、只是稍打折）；查證模組尚未上線，所以知識型主張一律標 <code class="k">unverified</code>、不會自稱已查證；蒸完只是產出，<b>生效與否你說了算</b>。</p>
+    </div>
+  </details>
+  <details id="sources">
+    <summary data-i18n="sources_summary">適合蒸什麼？不適合蒸什麼？</summary>
+    <div class="body" data-i18n="sources_body">
+      <table>
+        <tr><th>來源</th><th>適合？</th></tr>
+        <tr><td>你信任的老師的影片／課／文章、你自己的筆記或逐字稿（裡面有明確方法、SOP、判準、禁區）</td><td style="color:#0a7d3a;font-weight:800">✅ 適合</td></tr><tr><td>付費課程平台（登入牆後的課）</td><td style="color:#0a7d3a;font-weight:800">✅ 適合・要先用姊妹工具 <a href="https://github.com/Nouischen/course2notes" target="_blank" rel="noopener">course2notes</a> 拿逐字稿（多一段設定）</td></tr>
+        <tr><td>框架便利型內容（LLM 其實也會，但省你不知道怎麼問＋每次一致）</td><td style="color:#0a7d3a;font-weight:800">✅ 適合・會誠實貼標</td></tr>
+        <tr><td>純閒聊、沒有可照做框架的內容</td><td style="color:#b4232a;font-weight:800">✘ 會被勸退</td></tr>
+        <tr><td>DRM 加密／受保護的內容</td><td style="color:#b4232a;font-weight:800">✘ 不繞過</td></tr>
+        <tr><td>你不信任的來源</td><td style="color:#b4232a;font-weight:800">✘ 別蒸</td></tr>
+      </table>
+      <p style="font-size:14px;color:var(--muted);margin-top:10px">也提醒一句：本工具只忠實還原原方法，<b>不保證合規</b>——醫療、法律、財務等領域的法規要求請自行疊加（蒸出的 skill 會自動附這條警語）。</p>
+    </div>
+  </details>
+</div></section>
+
+<footer class="foot"><div class="wrap">
+  <p class="disc" data-i18n="footer_disc">⚖️ 本工具只忠實還原你所餵來源裡的方法，<b>不保證合規、也不宣稱讓 AI 變聰明</b>；醫療／法律／財務等領域的法規要求請自行疊加。不繞過任何 DRM 或加密保護。請用於處理你自己合法取得的內容、供個人使用；蒸出的 skill 含原方法精華，公開分享前請確認原作者授權。使用行為與後果由使用者自行負責。</p>
+  <p class="cc" data-i18n="footer_cc">anything2skill · 作者：陳昱傑醫師 · 開源 MIT · 內容管線基於姊妹專案 <a href="https://github.com/Nouischen/course2notes" target="_blank" rel="noopener">course2notes</a> · 用 ❤️ 與 Claude Code 打造</p>
+</div></footer>
+
+<script>
+var CUR='zh-Hant';
+var DICT={
+'zh-Hant':{
+ title:'anything2skill｜把上過的課與囤著的影片，變成 AI 幫你落地的技能',
+ copy:'複製',
+ nav_honest:'誠實聲明',nav_safety:'安全模型',nav_start:'開始使用',
+ eyebrow:'給會用 Claude Code 的你——就算沒空、也不知道怎麼問',
+ byline:'✍️ 作者：<b>陳昱傑醫師</b>',
+ hero_h1:'上過的課、囤著的影片，<br>讓 AI 幫你變成<span class="u">落地</span>的技能',
+ hero_lead:'那些你學過、卻一直沒真的用起來的方法——影片、課程、文章都行——蒸餾成 Claude Code 可調用的 skill；之後叫 AI 做事，它就照那套步驟、忠實還原你上課教的內容。這專案跑在你自己的電腦、你自己的 AI 上——<b>我們收不到你任何內容。</b>',
+ hero_cta1:'🚀 三步驟開始',hero_cta2:'🔍 我們不宣稱什麼',
+ hero_micro:'桌機用 · 本工具開源免費（需 Claude Code＝Claude 付費方案） · 蒸出 SKILL.md（你自己的方法庫、每步可回滾）',
+ mock_file:'product-quadrant-method/SKILL.md',
+ hero_mock:'<span class="cm">--- 蒸自你信任的來源 ---</span><br><span class="kw">name:</span> product-quadrant-method  <span class="cm"># 選品四象限法</span><br><span class="kw">disable-model-invocation:</span> true  <span class="cm"># 看過再啟用</span><br><span class="kw">x-anything2skill:</span> v1<br><br><span class="h"># 每次照這套做</span><br>1. 先把品項按「毛利 × 回購」分四象限<br>2. 高毛利高回購 → 主推<br>3. 逐項套原老師的判準，不臨場改<br><br><span class="no"># 禁區（不要做）</span><br>· 不要只看毛利就上架<br><br><span class="cm"># 之後這樣用</span><br>你：「幫我規劃新品上架」<br>AI：照〈選品四象限〉——第一步…<br><br><span class="lbl">價值標籤：框架便利型 · 忠實還原 · 每次一致</span>',
+ setup:'<div class="pq-title">🚀 開始前的準備（一次就好）</div><div class="pq-opts"><div class="pq-opt"><div class="pq-h"><span class="pq-badge">1</span> 裝好 Claude Code</div><div class="pq-d">本工具是 <b>Claude Code</b>（Anthropic 的 AI 工具）的技能；<b>Claude Code 本體需要 Claude 付費方案（Pro 起）</b>——那是 Anthropic 的訂閱費，本工具本身免費開源，蒸餾會消耗方案額度（開跑前會先估給你看）。<b>桌面版 App</b> 最好上手（開啟時選「Local 本機模式」）。<br><a class="pq-btn" href="https://code.claude.com/docs/en/desktop" target="_blank" rel="noopener">下載桌面版 App ↗</a><span class="pq-fine">⚠️ 網頁版（雲端）碰不到你的電腦、不能用。</span><details class="mini"><summary>習慣終端機？用 CLI 裝</summary><div class="mini-body"><div class="pq-cmd"><span class="pq-os">Windows（PowerShell）</span><pre><button class="copy" onclick="cp(this)">複製</button><span class="cmd">irm https://claude.ai/install.ps1 | iex</span></pre></div><div class="pq-cmd"><span class="pq-os">Mac / Linux</span><pre><button class="copy" onclick="cp(this)">複製</button><span class="cmd">curl -fsSL https://claude.ai/install.sh | bash</span></pre></div></div></details></div></div><div class="pq-opt"><div class="pq-h"><span class="pq-badge">2</span> 電腦要有這些</div><div class="pq-d"><b>Node.js、Python 3.10–3.13、ffmpeg、yt-dlp</b>（影片下載用）。這些是給程式用的底層工具——<b>你不用懂、也不用自己裝</b>：缺哪個，安裝時 Claude Code 會幫你裝好（會先問你要不要）。只蒸純文字／逐字稿時，多數用不到。</div></div></div><div class="pq-opts pq-opts-1"><div class="pq-opt"><div class="pq-h"><span class="pq-badge">3</span> 轉錄：只有蒸「影片」時才可能用到</div><div class="pq-d"><b>純文字、文章、逐字稿來源完全不需要轉錄</b>；只有蒸影片、且抓不到官方字幕時，才要把聲音轉成文字。<b>不確定你的電腦是哪種？直接開始就好</b>——Claude Code 會自動偵測，真的需要金鑰時才會停下來照下面教你辦。<br>有 <b>NVIDIA 顯卡</b>（Windows/Linux）或 <b>Apple Silicon Mac</b>（M 系列）→ <b>完全免費、在本機</b>轉錄，音檔不離開你的電腦。<br>其他情況（Intel Mac、AMD/Intel 顯卡、沒有顯卡）→ 需要一把付費的 <b>OpenAI API 金鑰</b>（約 US$0.006／分鐘，音檔會上傳 OpenAI）。<details class="mini"><summary>👉 沒有支援的顯卡？教你拿 OpenAI 金鑰</summary><div class="mini-body">1. 到 <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener">platform.openai.com/api-keys</a> 建一把（需先綁卡、儲值一點額度）。<br>2. 把那串 <code class="k">sk-…</code> 交給 Claude Code，說「幫我設定 OPENAI_API_KEY」。<br>3. 費用參考：一小時的影片大約 US$0.36，做完就不再收。有 NVIDIA／Apple Silicon 的人可略過。</div></details></div></div></div><div class="pq-note">💻 桌機用；請只蒸<b>你信任的來源、你自己合法取得</b>的內容。</div>',
+ start_head:'開始使用：全程在 Claude Code 裡對話',
+ start_sub:'<b>你不用自己打任何指令、不用懂技術。</b>用平常講話的方式跟 Claude Code 說，它就自己幫你安裝、下載、轉錄、蒸成 skill。過程中會跳出權限確認（裝套件、下載）——按「允許」即可。<b>啟用哪個 skill，永遠要先經過你點頭。</b>',
+ step1_title:'叫它安裝（一次就好）',tag_cc:'🤖 對 Claude Code 說',
+ step1_desc:'在 Claude Code 裡打這句，它會自己下載安裝：',
+ cmd_install:'幫我把 https://github.com/Nouischen/anything2skill 裝到 ~/.claude/skills/anything2skill，並把包內 agents/a2s-distiller.md 複製到 ~/.claude/agents/，之後我要用它把內容蒸成 skill',
+ step1_note:'裝好後<b>重開 Claude Code 一次</b>讓技能生效，就一勞永逸。',
+ step2_title:'叫它蒸成 skill',step2_desc:'把網址換成你的來源，打這句（也可以直接餵它一份逐字稿或筆記檔）：',
+ cmd_make:'用 anything2skill 把 https://你的影片或文章網址 蒸成 skill',
+ step2_hint:'來源可以是影片、課程、文章、你自己的筆記或逐字稿。它會先做一次<b>「價值預檢」</b>：值得蒸的才蒸，純閒聊沒框架的它會老實勸退你。',
+ step3_title:'看過再啟用（鑰匙在你手上）',tag_review:'🖱️ 你來把關',
+ step3_desc:'蒸完的 skill 先躺進你的 <b>skill vault</b>（在 Claude Code 的 skills 目錄之外，所以 AI 不會自動拿來用）。它會先給你一張一屏的<b>審核卡</b>（這顆做什麼、步驟、禁區、原話錨點、風險註記，想看全文再展開）；你對某一顆明確說「啟用」，它才把它<b>複製</b>一份進生效目錄（你的正本永遠留在 vault、隨時可回滾），並邀你用真任務試跑一次。<b>沒有你的點頭，任何 skill 都不會生效。</b>之後隨時說一句<b>「我的方法庫」</b>，就能看你擁有哪些方法、要用哪顆、哪顆還沒啟用。<a href="#trust">為什麼這樣設計 ↓</a>',
+ step3_flow:'<code class="k">取內容 → 蒸成草稿 → 貼價值標籤 → 融合入庫（可回滾）→ 審核卡 → 你點頭 → 啟用＋當場試跑一次</code>。每次入庫都會存一個回滾點，你的方法庫永遠可以退回上一步。',
+ feat_head:'它幫你做到什麼<span style="font-size:15px;font-weight:500;color:var(--muted)">（不含「讓 AI 變聰明」——見下方誠實聲明）</span>',
+ feats:'<div class="feat"><span class="fi">🏷️</span><div><b>價值預檢・誠實標籤</b>蒸之前先告訴你這套框架值不值得：是「LLM 生不出來的新知識」，還是「LLM 也會、但省你不知道怎麼問」。只有真正沒框架的純閒聊才勸退。</div></div><div class="feat"><span class="fi">🧯</span><div><b>融合防通膨</b>同一位老師越講越完整就併進去深化；同一套框架套不同領域（咖啡四象限 vs 茶葉四象限）抽成「一個框架＋多範例」；不同派系並存分流、衝突停下讓你選，絕不攪拌。</div></div><div class="feat"><span class="fi">🎯</span><div><b>忠實還原＋每次一致</b>你說「照那套做」，AI 真的照步驟、比例、連禁區都守住；同樣任務重複問，結構穩定不漂移（我們自己盲測的忠實度級距 9:2）。</div></div><div class="feat"><span class="fi">🔒</span><div><b>安全：鑰匙在你手上</b>蒸出的 skill 先躺 vault、預設不生效；審核卡你看過、明確點頭才啟用；只蒸你信任的來源。</div></div><div class="feat"><span class="fi">🪶</span><div><b>分層省 token</b>重讀幾萬字逐字稿的粗活派給隨包的 Sonnet 子代理（便宜），高判斷的融合裁決才跑你的主模型（建議 Opus 以上求穩）。</div></div><div class="feat"><span class="fi">🤖</span><div><b>隨包 Sonnet 子代理</b>它唯讀、不寫檔；就算來源夾帶惡意指令想挾持它，它也寫不出東西，草稿一律回主模型檢視才落檔。</div></div><div class="feat"><span class="fi">⏭️</span><div><b>不繞過 DRM</b>偵測到加密保護的內容會直接跳過並告訴你，改給合法替代路（官方字幕、公開版本、向作者索取）；不嘗試、不推薦破解。</div></div><div class="feat"><span class="fi">📼</span><div><b>多種來源</b>影片（自動下載＋轉錄）、文章、逐字稿、你自己的筆記都能蒸；付費課程接姊妹工具 <a href="https://github.com/Nouischen/course2notes" target="_blank" rel="noopener">course2notes</a> 的下載管線。</div></div>',
+ honest_head:'我們不宣稱什麼',
+ honest_sub:'這是整個工具的立場，先講清楚，你再決定要不要用。',
+ honest_body:'<p class="big">我們不宣稱「裝了 skill，AI 會變聰明」。</p><p style="margin:0 0 12px">我們自己做過盲測：對於通用方法論，一個<b>很會問問題的人</b>帶不帶 skill，答案品質其實差不多——現代 LLM 本來就會那些。所以我們永遠不會跟你說「這會讓 AI 答得更好」。</p><p style="margin:0">那 skill 的價值在哪？在於<b>大部分人沒空、也沒那個清晰度把好問題問出來</b>。skill 幫你買到三件事：</p><div class="buys"><div class="buy"><div class="n"><span class="pq-badge">1</span> 省下「知道怎麼問」的功夫</div><div class="d">把專家的提問框架與結構直接給你，你不用自己摸索該問什麼、答案該長怎樣。</div></div><div class="buy"><div class="n"><span class="pq-badge">2</span> 忠實</div><div class="d">你說「照那套方法做」，AI 真的照那套做——步驟、比例，連「不要做什麼」的禁區都守住。</div></div><div class="buy"><div class="n"><span class="pq-badge">3</span> 一致</div><div class="d">同樣任務重複問，結構穩定不漂移；沒有 skill 的 AI 每次給你的是它自己的預設意見，可能安靜地跟你認同的方法相反。</div></div></div><p style="margin:18px 0 0">一句話：這工具服務的是<b>「沒空、也不知道怎麼問」的大多數人</b>——不是要取代很會問的專家。</p>',
+ priv_head:'隱私：我們只收數字',
+ priv_body:'<p style="margin-top:0"><b>預設會回傳一筆「匿名使用計數」</b>，幫我們判斷有多少人在用。只收：一組本機隨機碼（無法對應到你）、事件（安裝／完成一次蒸餾）、這次蒸了幾個 skill、來源類型（youtube／文字／課程…）、版本、時間。</p><p style="margin:0"><b>絕對不收：</b>你蒸的內容、標題、網址、任何個資或檔案。程式碼開源可自查。關閉：跟 Claude Code 說「幫我把 anything2skill 的匿名回報關掉」（它會替你設 <code class="k">ANYTHING2SKILL_TELEMETRY=off</code>）。老實說清楚：本包出廠已預填作者的統計端點（只收上述計數），所以<b>預設會回報</b>——關閉就是上面那一句話的事。</p><p style="margin:12px 0 0">🎙️ <b>關於轉錄：</b>蒸影片時，有 NVIDIA 顯卡或 Apple Silicon Mac 就在本機轉錄、音檔不離開你的電腦；其他情況用 OpenAI API 模式時，音檔會上傳給 OpenAI 轉錄（適用 OpenAI 的 API 資料政策），作者端一樣收不到任何東西。純文字／逐字稿來源不需轉錄。</p>',
+ trust:'<summary>🔒 蒸出來的 skill 會不會被惡意來源動手腳？（重要，點開看）</summary><div class="oa-body">先把界線說清楚，因為這關係到你的安全：<br><br>· <b>蒸出來的 skill 是「可執行的 AI 指令」</b>，內容來自你餵的來源。這代表一個惡意來源<b>有可能</b>把壞指令偽裝成一條看起來正常的方法規則，而工具<b>沒辦法保證</b>能把它和真正的方法分開。<br>· 所以本工具的設計是「<b>信任由你賦予，不由工具自動賦予</b>」：新蒸的 skill 一律先躺進 vault（在 skills 目錄之外，AI 不會自動發現、觸發），而且帶 <code class="k">disable-model-invocation: true</code>。<b>啟用＝你看過審核卡（或全文）、對那一顆明確點頭，agent 才把它「複製一份進生效目錄＋移除不觸發設定」</b>——<b>vault 永遠留著正本</b>（所以每步可回滾、刪掉生效那份也不會遺失方法），沒有你的確認它不會啟用任何東西（想要最嚴格？選配 hook 可改成複製進生效目錄一律親手做）。<br>· 任何要改動你既有 skill 的更新，都會先出一份預覽（<code class="k">PENDING-UPDATE</code>），你點頭才套用，不會偷改你信任的東西。<br>· 選配還附一支加固 hook，讓工具自家蒸出的 skill 不會被 agent 自己裝進生效目錄（safe-by-default 防呆）。<br><br><b>但我們必須誠實告訴你這支 hook 的界線：它不是一道能擋住惡意來源的牆。</b>一個被惡意來源當場挾持的 agent，可以繞過它（例如改用別的方式寫檔）——這點我們自己紅隊測過四輪、確認擋不住。<b>防惡意來源真正、也唯一的防線，是你只蒸自己信任的來源＋啟用前自己看一眼。</b>我們不會、也請你不要相信任何「蒸任何來源都安全」的說法。<br><br>一句話：<b>工具幫你產出方法庫，但啟用的鑰匙一直在你手上。</b></div>',
+ how_summary:'運作原理（想深入了解再看）',
+ how_body:'<p>它不是死板的模板，而是讓你的 Claude Code 讀懂內容、照蒸餾規格把方法抽出來。整條流程：</p><div class="flow"><span>取內容</span><span class="ar">→</span><span>Sonnet 子代理讀長逐字稿起草</span><span class="ar">→</span><span>主模型貼價值標籤</span><span class="ar">→</span><span>融合裁決</span><span class="ar">→</span><span>入庫（git 可回滾）</span><span class="ar">→</span><span>列待審清單</span></div><p style="margin-top:14px">幾個關鍵：最花 token 的「重讀幾萬字逐字稿」派給便宜的 <b>Sonnet 子代理</b>，你的主模型只做小 token、高判斷的融合裁決（所以建議主模型用 <b>Opus 以上</b>求穩，設 Sonnet 也能跑、只是稍打折）；查證模組尚未上線，所以知識型主張一律標 <code class="k">unverified</code>、不會自稱已查證；蒸完只是產出，<b>生效與否你說了算</b>。</p>',
+ sources_summary:'適合蒸什麼？不適合蒸什麼？',
+ sources_body:'<table><tr><th>來源</th><th>適合？</th></tr><tr><td>你信任的老師的影片／課／文章、你自己的筆記或逐字稿（裡面有明確方法、SOP、判準、禁區）</td><td style="color:#0a7d3a;font-weight:800">✅ 適合</td></tr><tr><td>付費課程平台（登入牆後的課）</td><td style="color:#0a7d3a;font-weight:800">✅ 適合・要先用姊妹工具 <a href="https://github.com/Nouischen/course2notes" target="_blank" rel="noopener">course2notes</a> 拿逐字稿（多一段設定）</td></tr><tr><td>框架便利型內容（LLM 其實也會，但省你不知道怎麼問＋每次一致）</td><td style="color:#0a7d3a;font-weight:800">✅ 適合・會誠實貼標</td></tr><tr><td>純閒聊、沒有可照做框架的內容</td><td style="color:#b4232a;font-weight:800">✘ 會被勸退</td></tr><tr><td>DRM 加密／受保護的內容</td><td style="color:#b4232a;font-weight:800">✘ 不繞過</td></tr><tr><td>你不信任的來源</td><td style="color:#b4232a;font-weight:800">✘ 別蒸</td></tr></table><p style="font-size:14px;color:var(--muted);margin-top:10px">也提醒一句：本工具只忠實還原原方法，<b>不保證合規</b>——醫療、法律、財務等領域的法規要求請自行疊加（蒸出的 skill 會自動附這條警語）。</p>',
+ footer_disc:'⚖️ 本工具只忠實還原你所餵來源裡的方法，<b>不保證合規、也不宣稱讓 AI 變聰明</b>；醫療／法律／財務等領域的法規要求請自行疊加。不繞過任何 DRM 或加密保護。請用於處理你自己合法取得的內容、供個人使用；蒸出的 skill 含原方法精華，公開分享前請確認原作者授權。使用行為與後果由使用者自行負責。',
+ footer_cc:'anything2skill · 作者：陳昱傑醫師 · 開源 MIT · 內容管線基於姊妹專案 <a href="https://github.com/Nouischen/course2notes" target="_blank" rel="noopener">course2notes</a> · 用 ❤️ 與 Claude Code 打造'
+},
+'en':{
+ title:'anything2skill — turn the courses and videos piling up into skills your AI puts to work',
+ copy:'Copy',
+ nav_honest:'What we don’t claim',nav_safety:'Safety model',nav_start:'Get started',
+ eyebrow:'For Claude Code users — even the busy ones who never know what to ask',
+ byline:'✍️ by <b>Dr. Yu-Chieh Chen</b>',
+ hero_h1:'The courses you took, the videos piling up—<br>let AI turn them into skills that <span class="u">land</span>',
+ hero_lead:'The methods you learned but never quite applied — from a video, course, or article — distilled into a Claude Code skill; then your AI does the work following those steps, faithfully reproducing what the course taught. This project runs on your own machine and your own AI, so <b>we never see any of your content.</b>',
+ hero_cta1:'🚀 Get started in 3 steps',hero_cta2:'🔍 What we don’t claim',
+ hero_micro:'Desktop · Free & open-source (requires Claude Code = a paid Claude plan) · Outputs SKILL.md (your own method library, every step rollback-able)',
+ mock_file:'product-quadrant-method/SKILL.md',
+ hero_mock:'<span class="cm">--- distilled from a source you trust ---</span><br><span class="kw">name:</span> product-quadrant-method<br><span class="kw">disable-model-invocation:</span> true  <span class="cm"># review before enabling</span><br><span class="kw">x-anything2skill:</span> v1<br><br><span class="h"># Do this every time</span><br>1. Sort items into 4 quadrants: margin × repeat-rate<br>2. High margin + high repeat → push first<br>3. Apply the teacher’s criteria as-is<br><br><span class="no"># Never do (guardrails)</span><br>· Don’t list on margin alone<br><br><span class="cm"># then use it like this</span><br>You: “plan the new product launch”<br>AI: per 〈product-quadrant-method〉 — step 1…<br><br><span class="lbl">value tag: framework-convenience · faithful · consistent</span>',
+ setup:'<div class="pq-title">🚀 Before you start (one-time)</div><div class="pq-opts"><div class="pq-opt"><div class="pq-h"><span class="pq-badge">1</span> Install Claude Code</div><div class="pq-d">This tool is a skill for <b>Claude Code</b> (an AI tool by Anthropic); <b>Claude Code itself requires a paid Claude plan (Pro and up)</b> — that’s Anthropic’s subscription, this tool is free and open-source, and distilling consumes plan usage (it estimates the cost before starting). The <b>desktop app</b> is easiest (choose “Local mode” on launch).<br><a class="pq-btn" href="https://code.claude.com/docs/en/desktop" target="_blank" rel="noopener">Download the desktop app ↗</a><span class="pq-fine">⚠️ The web version (cloud) can’t reach your computer.</span><details class="mini"><summary>Prefer a terminal? Install the CLI</summary><div class="mini-body"><div class="pq-cmd"><span class="pq-os">Windows (PowerShell)</span><pre><button class="copy" onclick="cp(this)">Copy</button><span class="cmd">irm https://claude.ai/install.ps1 | iex</span></pre></div><div class="pq-cmd"><span class="pq-os">Mac / Linux</span><pre><button class="copy" onclick="cp(this)">Copy</button><span class="cmd">curl -fsSL https://claude.ai/install.sh | bash</span></pre></div></div></details></div></div><div class="pq-opt"><div class="pq-h"><span class="pq-badge">2</span> Have these on your computer</div><div class="pq-d"><b>Node.js, Python 3.10–3.13, ffmpeg, yt-dlp</b> (for video downloads). These are low-level tools — <b>you don’t need to understand or install them yourself</b>: if any is missing, Claude Code installs it during setup (it asks first). For plain text / transcripts, most aren’t needed.</div></div></div><div class="pq-opts pq-opts-1"><div class="pq-opt"><div class="pq-h"><span class="pq-badge">3</span> Transcription: only ever needed for videos</div><div class="pq-d"><b>Text, article, and transcript sources need no transcription at all</b>; only distilling a video with no official captions needs audio turned into text. <b>Not sure which GPU you have? Just start</b> — Claude Code detects it and only stops to ask if a key is actually needed (guide below).<br>An <b>NVIDIA GPU</b> (Windows/Linux) or an <b>Apple Silicon Mac</b> (M-series) → <b>free, fully local</b>; audio never leaves your computer.<br>Anything else (Intel Mac, AMD/Intel GPU, or no GPU) → a paid <b>OpenAI API key</b> (~US$0.006/min; audio is uploaded to OpenAI).<details class="mini"><summary>👉 No supported GPU? How to get an OpenAI key</summary><div class="mini-body">1. At <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener">platform.openai.com/api-keys</a>, create one (add a card + a little credit first).<br>2. Hand the <code class="k">sk-…</code> key to Claude Code: “set my OPENAI_API_KEY”.<br>3. Rough cost: a one-hour video is about US$0.36, charged once. Skip this if you have an NVIDIA GPU or Apple Silicon Mac.</div></details></div></div></div><div class="pq-note">💻 Desktop only; only distill <b>sources you trust and content you legally obtained</b>.</div>',
+ start_head:'Getting started: it all happens by chatting with Claude Code',
+ start_sub:'<b>No commands to run, no tech skills needed.</b> You just talk to Claude Code in plain language — it installs itself, downloads, transcribes, and distills. It shows permission prompts (installing packages, downloading) — approving them is normal. <b>No skill is ever enabled without your explicit go-ahead.</b>',
+ step1_title:'Tell it to install (just once)',tag_cc:'🤖 Say to Claude Code',
+ step1_desc:'Type this in Claude Code and it downloads & installs itself:',
+ cmd_install:'Install the skill from https://github.com/Nouischen/anything2skill into ~/.claude/skills/anything2skill, and copy its agents/a2s-distiller.md into ~/.claude/agents/ — I’ll use it to distill content into skills',
+ step1_note:'After it installs, <b>restart Claude Code once</b> so the skill loads — then you’re set for good.',
+ step2_title:'Tell it to distill',step2_desc:'Replace the URL with your source, then type (you can also just hand it a transcript or notes file):',
+ cmd_make:'Use anything2skill to distill https://your-video-or-article-url into a skill',
+ step2_hint:'The source can be a video, course, article, or your own notes/transcript. It runs a <b>value pre-check</b> first: it only distills what’s worth distilling, and honestly talks you out of pure chit-chat with no framework.',
+ step3_title:'Review, then enable (you hold the key)',tag_review:'🖱️ You’re the gatekeeper',
+ step3_desc:'A distilled skill first lands in your <b>skill vault</b> (outside Claude Code’s skills folder, so the AI won’t use it automatically). It then shows you a one-screen <b>review card</b> (what it does, steps, guardrails, quoted anchors, risk notes — expand to full text anytime); say “enable” for a skill and it <b>copies</b> it into the active folder (your master always stays in the vault, always rollback-able) and invites you to try it on a real task right away. <b>Nothing takes effect without your go-ahead.</b> Anytime, just say <b>“my method library”</b> to see what you own, what to call, and what’s not yet enabled. <a href="#trust">Why it’s built this way ↓</a>',
+ step3_flow:'<code class="k">get content → draft → tag its value → fuse & store (rollback-able) → review card → your go-ahead → enabled + a first live run</code>. Every store adds a rollback point, so your method library can always step back.',
+ feat_head:'What it does for you<span style="font-size:15px;font-weight:500;color:var(--muted)"> (not “make your AI smarter” — see the honest note below)</span>',
+ feats:'<div class="feat"><span class="fi">🏷️</span><div><b>Value pre-check &amp; honest labels</b>before distilling, it tells you whether the framework is worth it: “knowledge an LLM can’t generate,” or “an LLM knows this too, but it saves you knowing what to ask.” Only true framework-less chit-chat gets talked out of.</div></div><div class="feat"><span class="fi">🧯</span><div><b>Anti-bloat fusion</b>the same teacher, told more fully, gets merged deeper; the same framework across domains (coffee quadrants vs. tea quadrants) becomes “one framework + examples”; rival schools coexist, and real conflicts pause for you to choose — never blended.</div></div><div class="feat"><span class="fi">🎯</span><div><b>Faithful + consistent every time</b>say “do it that way” and the AI actually does — steps, ratios, even the “don’t do X” guardrails; repeat the task and the structure holds (our own blind test: faithfulness at a 9:2 margin).</div></div><div class="feat"><span class="fi">🔒</span><div><b>Safety: you hold the key</b>a distilled skill first sits in the vault, inactive by default; it takes your review and an explicit go-ahead to enable; only distill sources you trust.</div></div><div class="feat"><span class="fi">🪶</span><div><b>Layered to save tokens</b>the grunt work of re-reading tens of thousands of words is handed to the bundled Sonnet sub-agent (cheap); only the high-judgment fusion runs on your main model (Opus or above recommended).</div></div><div class="feat"><span class="fi">🤖</span><div><b>Bundled Sonnet sub-agent</b>read-only, never writes files; even if a source smuggles in malicious instructions to hijack it, it can’t write anything — drafts always come back to the main model for review before being saved.</div></div><div class="feat"><span class="fi">⏭️</span><div><b>Never bypasses DRM</b>protected/encrypted content is skipped and reported, with legal alternatives suggested (official captions, public versions, ask the author); it never attempts or recommends cracking.</div></div><div class="feat"><span class="fi">📼</span><div><b>Many source types</b>videos (auto download + transcribe), articles, transcripts, and your own notes; paid courses route through the sister tool <a href="https://github.com/Nouischen/course2notes" target="_blank" rel="noopener">course2notes</a>’ download pipeline.</div></div>',
+ honest_head:'What we don’t claim',
+ honest_sub:'This is the tool’s stance — stated up front, so you can decide whether to use it.',
+ honest_body:'<p class="big">We don’t claim “installing a skill makes your AI smarter.”</p><p style="margin:0 0 12px">We ran our own blind test: for general methodology, <b>someone who asks good questions</b> gets about the same answer quality with or without the skill — modern LLMs already know that stuff. So we’ll never tell you “this makes your AI answer better.”</p><p style="margin:0">So where’s the value? In the fact that <b>most people don’t have the time — or the clarity — to ask the good question.</b> A skill buys you three things:</p><div class="buys"><div class="buy"><div class="n"><span class="pq-badge">1</span> Saves the “knowing what to ask” work</div><div class="d">it hands you the expert’s question framework and structure, so you don’t have to figure out what to ask or what a good answer looks like.</div></div><div class="buy"><div class="n"><span class="pq-badge">2</span> Faithful</div><div class="d">when you say “do it that way,” the AI actually does — steps, ratios, and the “don’t do X” guardrails included.</div></div><div class="buy"><div class="n"><span class="pq-badge">3</span> Consistent</div><div class="d">repeat the same task and the structure holds; a skill-less AI gives you its own default opinion each time, which may quietly contradict the method you trust.</div></div></div><p style="margin:18px 0 0">In one line: this tool serves <b>the majority who are busy and unsure what to ask</b> — not the expert who already asks well.</p>',
+ priv_head:'Privacy: we only collect numbers',
+ priv_body:'<p style="margin-top:0"><b>By default it sends one anonymous usage ping</b> so we can gauge how many people use it. It only includes: a random local ID (can’t be traced to you), the event (install / a distillation done), how many skills this run, the source type (youtube / text / course…), version, and timestamp.</p><p style="margin:0"><b>Never collected:</b> the content you distill, titles, URLs, or any personal data or files. The code is open-source — check for yourself. Turn it off: just tell Claude Code “turn off anything2skill’s anonymous reporting” (it sets <code class="k">ANYTHING2SKILL_TELEMETRY=off</code> for you). To be fully honest: the package ships with the author’s stats endpoint pre-filled (counts only), so reporting is <b>on by default</b> — turning it off is that one sentence.</p><p style="margin:12px 0 0">🎙️ <b>About transcription:</b> when distilling a video, with an NVIDIA GPU or an Apple Silicon Mac audio is transcribed locally and never leaves your computer; otherwise the OpenAI API mode sends your audio to OpenAI to transcribe (under OpenAI’s API data policy) — the author still receives nothing. Text/transcript sources need no transcription.</p>',
+ trust:'<summary>🔒 Could a malicious source tamper with a distilled skill? (important — open me)</summary><div class="oa-body">Let’s be clear about the boundary, because your safety depends on it:<br><br>· <b>A distilled skill is “executable AI instructions,”</b> and its content comes from the source you feed it. That means a malicious source <b>could</b> disguise a bad instruction as a normal-looking method rule, and the tool <b>can’t guarantee</b> it will separate that from a genuine method.<br>· So the tool is designed so that <b>trust is granted by you, not automatically by the tool</b>: a newly distilled skill always lands in the vault first (outside the skills folder, where the AI won’t auto-discover or trigger it) and carries <code class="k">disable-model-invocation: true</code>. <b>Enabling = you read the review card (or full text) and explicitly say so for that skill; only then does the agent copy it into the active folder + remove the no-trigger setting</b> — <b>the vault always keeps the master</b> (so every step is rollback-able, and deleting the active copy never loses the method); nothing is enabled without your confirmation (want the strictest posture? an optional hook makes the copy-in manual-only).<br>· Any update to an existing skill of yours is shown as a preview (<code class="k">PENDING-UPDATE</code>) first; it only applies when you say so — it won’t quietly change what you trust.<br>· There’s also an optional hardening hook that keeps the tool’s own distilled skills from being installed into the active folder by the agent (safe-by-default).<br><br><b>But we have to be honest about that hook’s limit: it is not a wall that stops a malicious source.</b> An agent hijacked on the spot by a malicious source can bypass it (e.g. by writing the file another way) — we red-teamed this ourselves over four rounds and confirmed it doesn’t hold. <b>The real — and only — defense against malicious sources is that you only distill sources you trust, and look before you enable.</b> We won’t claim, and please don’t believe, that “distilling any source is safe.”<br><br>In one line: <b>the tool produces your method library, but the key to enabling stays in your hands.</b></div>',
+ how_summary:'How it works (for the curious)',
+ how_body:'<p>It isn’t a rigid template — it lets your Claude Code read the content and pull the method out following the distillation spec. The whole pipeline:</p><div class="flow"><span>get content</span><span class="ar">→</span><span>Sonnet sub-agent reads long transcripts &amp; drafts</span><span class="ar">→</span><span>main model tags its value</span><span class="ar">→</span><span>fusion ruling</span><span class="ar">→</span><span>store (git rollback-able)</span><span class="ar">→</span><span>list for your review</span></div><p style="margin-top:14px">A few things worth knowing: the most token-heavy part — re-reading tens of thousands of words — goes to the cheap <b>Sonnet sub-agent</b>, while your main model only does the small-token, high-judgment fusion (so <b>Opus or above</b> is recommended for stability; Sonnet works too, just a bit less sharp); the fact-checking module isn’t live yet, so knowledge claims are always marked <code class="k">unverified</code> — it never claims to have verified them; and distilling only produces a draft — <b>whether it takes effect is up to you</b>.</p>',
+ sources_summary:'What’s good to distill? What isn’t?',
+ sources_body:'<table><tr><th>Source</th><th>Good fit?</th></tr><tr><td>Videos/courses/articles from a teacher you trust, or your own notes/transcripts (with a clear method, SOP, criteria, guardrails)</td><td style="color:#0a7d3a;font-weight:800">✅ Yes</td></tr><tr><td>Paid course platforms (behind a login)</td><td style="color:#0a7d3a;font-weight:800">✅ Yes · first get a transcript via the sister tool <a href="https://github.com/Nouischen/course2notes" target="_blank" rel="noopener">course2notes</a> (one extra setup)</td></tr><tr><td>Convenience-framework content (an LLM knows it too, but it saves you knowing what to ask + consistency)</td><td style="color:#0a7d3a;font-weight:800">✅ Yes · honestly labeled</td></tr><tr><td>Pure chit-chat with no followable framework</td><td style="color:#b4232a;font-weight:800">✘ Talked out of it</td></tr><tr><td>DRM-encrypted / protected content</td><td style="color:#b4232a;font-weight:800">✘ Not bypassed</td></tr><tr><td>Sources you don’t trust</td><td style="color:#b4232a;font-weight:800">✘ Don’t distill</td></tr></table><p style="font-size:14px;color:var(--muted);margin-top:10px">One more note: this tool only faithfully reproduces the original method — it does <b>not</b> guarantee compliance. Regulatory requirements in medicine, law, finance, etc. are yours to add (a distilled skill auto-appends this caveat).</p>',
+ footer_disc:'⚖️ This tool only faithfully reproduces the method in the source you feed it; it <b>does not guarantee compliance and does not claim to make your AI smarter</b>. Regulatory requirements in medicine / law / finance are yours to add. It bypasses no DRM or encryption. Use it on content you legally obtained, for personal use; a distilled skill contains the essence of the original method, so confirm the author’s license before sharing publicly. You are responsible for how you use it.',
+ footer_cc:'anything2skill · by Dr. Yu-Chieh Chen · Open-source (MIT) · Content pipeline based on the sister project <a href="https://github.com/Nouischen/course2notes" target="_blank" rel="noopener">course2notes</a> · Built with ❤️ and Claude Code'
+}
+};
+function applyLang(l){
+  CUR=DICT[l]?l:'zh-Hant';var d=DICT[CUR];
+  document.documentElement.lang=CUR;
+  if(d.title)document.title=d.title;
+  document.querySelectorAll('[data-i18n]').forEach(function(el){var k=el.getAttribute('data-i18n');if(d[k]!=null)el.innerHTML=d[k];});
+  document.querySelectorAll('.langbtn').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-lang')===CUR);});
+  try{localStorage.setItem('a2s_lang',CUR);}catch(e){}
+}
+function setLang(l){applyLang(l);}
+function cp(btn){var s=btn.parentElement.querySelector('.cmd');if(!s)return;var txt=s.textContent;function done(){btn.textContent=(CUR==='en'?'Copied ✓':'已複製 ✓');setTimeout(function(){btn.textContent=(DICT[CUR]||{}).copy||'複製';},1400);}
+  try{if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(done,fallback);}else{fallback();}}catch(e){fallback();}
+  function fallback(){try{var t=document.createElement('textarea');t.value=txt;t.style.position='fixed';t.style.opacity='0';document.body.appendChild(t);t.select();var ok=document.execCommand('copy');document.body.removeChild(t);if(ok){done();}else{btn.textContent=(CUR==='en'?'Select & copy':'請手動複製');}}catch(_){/* 最壞情況：讓使用者自行選取複製 */}}}
+(function(){var saved=null;try{saved=localStorage.getItem('a2s_lang');}catch(e){}var nl=(navigator.language||'').toLowerCase();applyLang(saved||(nl.indexOf('zh')===0?'zh-Hant':'en'));})();
+// 點「安全模型／運作原理」錨點時，自動展開目標 <details>
+function openHashDetails(){var h=location.hash;if(!h||h.length<2)return;var el;try{el=document.querySelector(h);}catch(e){return;}if(el&&el.tagName==='DETAILS')el.open=true;}
+addEventListener('hashchange',openHashDetails);openHashDetails();
+</script>
+</body>
+</html>

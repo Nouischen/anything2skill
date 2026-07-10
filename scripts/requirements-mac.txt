@@ -1,0 +1,4 @@
+# anything2skill — Apple Silicon Mac 本機轉錄（免費，吃 Mac 的 GPU/神經引擎）
+# 手動安裝：pip3 install -r requirements-mac.txt
+# 只適用 Apple Silicon（M 系列晶片）的 macOS；Intel Mac 沒有這條路徑，請改用 requirements-api.txt。
+mlx-whisper
