@@ -23,6 +23,19 @@ So where's the value? In the fact that **most people don't have the time or the 
 2. **Faithful**: when you say "do it that way," the AI actually does — steps, ratios, even the "don't do X" guardrails (blind-rated faithfulness at a 9:2 margin).
 3. **Consistent**: repeat the task and the structure holds — instead of the AI's own default opinion that may quietly contradict the method you trust.
 
+## What it's best for
+
+A skill earns its keep only when **both** are true:
+1. **There's a method you'd want the AI to follow every time** — steps, criteria, a sequence, guardrails.
+2. **It's not something a one-line question already answers well** — it's specific, counter-intuitive, or your own idiosyncratic way, so just asking would get you nothing, or a generic/wrong answer.
+
+- ✅ **Great fits**: hands-on how-to courses, technique workshops, a speaker's SOP/playbook, your own method notes — anything with steps, criteria, and guardrails you'd repeat.
+- ⚠️ **AI courses — it depends**: a reusable AI *workflow* or prompt framework → good; general AI *concepts* → poor (the model already knows, and it goes stale fast).
+- ✘ **Not for**: pure knowledge/concepts (the AI already knows — if you just want to keep it to read, use [course2notes](https://github.com/Nouischen/course2notes) for notes), summaries, or content with no method to follow (news, opinion).
+- 🚫 **A method you can just ask for in one line — where the AI's default answer is already good (e.g. a standard systematic checklist) — don't distill it. Just ask.** The value pre-check will actually tell you when this is the case, so you don't end up with a skill that feels pointless.
+
+👉 Want the AI to *do it your way, every time* → anything2skill. Just want to *keep it to read* → course2notes.
+
 ## Install (pick one path)
 
 **Path A — plugin install (recommended: two commands, the distiller subagent auto-loads)**
@@ -101,6 +114,19 @@ In one line: this tool **produces** your method library, but the **key to enabli
 1. **省下「知道怎麼問」的功夫**：把專家的提問框架與結構直接給你，你不用自己摸索該問什麼、答案該長怎樣。
 2. **忠實**：你說「照那套方法做」時，AI 真的照那套做——步驟、比例、連「不要做什麼」的禁區都守住（盲評忠實度 9:2 級距）。
 3. **一致**：同樣任務重複問，結構穩定不漂移；沒有 skill 的 AI 每次給你的是它自己的預設意見，可能安靜地跟你認同的方法相反。
+
+## 最適合蒸什麼
+
+**兩個條件都成立，才值得蒸成 skill：**
+1. **裡面有一套你想讓 AI 每次照做的方法**——步驟、判準、流程、禁區。
+2. **這套方法不是一句話就問得出來的**——它夠專屬、夠反直覺、或是你自己獨特的做法，隨口問拿不到，或只會拿到平庸／錯的答案。
+
+- ✅ **最適合**：教「怎麼做」的實作課、技術工作坊、講者的 SOP／playbook、你自己的方法筆記——凡是有步驟、判準、流程、檢核、禁區、你會重複做的。
+- ⚠️ **AI 課程看情況**：教「可複用的 AI 操作流程／prompt 框架」→ 適合；教「AI 通用概念知識」→ 不適合（AI 本來就會、還過時得快）。
+- ✘ **不適合**：純知識／概念／科普（AI 已經會——只想留著讀就用 [course2notes](https://github.com/Nouischen/course2notes) 做筆記）、只想要摘要、沒有可照做框架的內容（新聞、心得抒發）。
+- 🚫 **還有——一句話就問得到、AI 預設答案又夠好的通用方法（例：標準的系統性檢查流程），別蒸，直接問就好。** 價值預檢會主動告訴你這種情況，讓你不會蒸出一顆自己都覺得雞肋的 skill。
+
+👉 想「讓 AI 照你的方法、每次一致地做」→ 用 anything2skill；只想「留起來讀」→ 用 course2notes。
 
 ## 安裝（兩條路擇一）
 
