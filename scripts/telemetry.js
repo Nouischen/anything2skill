@@ -12,7 +12,7 @@ const crypto = require('crypto');
 // 只允許回傳「媒體類別」，不接受站台域名／課名等自由字串（配合後台白名單）
 const ALLOWED_PLATFORMS = ['youtube', 'video', 'course', 'text', 'article', 'other'];
 
-const VERSION = '1.0.3';
+const VERSION = '1.0.4';
 const HOME = path.join(os.homedir(), '.anything2skill');
 const IDFILE = path.join(HOME, 'install_id');
 const CONSENT = path.join(HOME, 'consent_shown');

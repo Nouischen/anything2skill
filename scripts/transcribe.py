@@ -79,9 +79,40 @@ def _outbase(f, seen):
             cand = f"{stem}-{ext}-{n}"; n += 1
     seen.add(cand.lower())
     return os.path.join(TR, cand)
+def _claimed_by_other_source(base, src):
+    # 同名不同副檔（lesson.mp3/lesson.m4a）的輸出名會隨「這次執行有哪些檔」而變：
+    # 若使用者移走 mp3 再重跑，m4a 會搶到裸名 lesson、又看到舊的 lesson.fulltext.txt 而誤 skip
+    # ——舊逐字稿被當成 m4a 的結果。防法＝每個輸出旁存 .src 記錄來源檔名；
+    # skip 前核對來源身分，對不上就把這個輸出名讓給原主、自己改用帶副檔名的名字。
+    marker = base + ".src"
+    try:
+        recorded = open(marker, encoding="utf-8").read().strip()
+        return recorded != "" and recorded != os.path.basename(src)
+    except OSError:
+        return False  # 無 .src（舊版產物或手放的逐字稿）：維持舊行為，視為同源可 skip
+
 _seen = set()
-jobs = [(f, base) for f in files for base in (_outbase(f, _seen),)
-        if not os.path.exists(base + ".fulltext.txt")]
+jobs = []
+for f in files:
+    base = _outbase(f, _seen)
+    if os.path.exists(base + ".fulltext.txt"):
+        if not _claimed_by_other_source(base, f):
+            continue  # 真的做過（或無 .src 可分辨＝維持舊行為）→ skip
+        # 輸出名被別的來源檔佔用（.src 對不上）→ 改用帶副檔名的名字，逐序號找到自己的或空位
+        stem = os.path.splitext(os.path.basename(f))[0]
+        ext = os.path.splitext(f)[1].lstrip(".").lower()
+        base = os.path.join(TR, f"{stem}-{ext}")
+        n = 2
+        while os.path.exists(base + ".fulltext.txt") and _claimed_by_other_source(base, f):
+            base = os.path.join(TR, f"{stem}-{ext}-{n}"); n += 1
+        if os.path.exists(base + ".fulltext.txt"):
+            continue  # 這個帶副檔名的輸出存在且 .src 是自己 → 做過，skip
+    # 排入工作的同時記錄來源身分（fulltext 尚不存在，中途當掉不影響 skip 判定）
+    try:
+        _atomic_write(base + ".src", os.path.basename(f))
+    except OSError:
+        pass  # 印記寫不進去就算了：頂多退回「無從分辨」的舊行為，不擋轉錄
+    jobs.append((f, base))
 print(f"[plan] 待轉錄 {len(jobs)} / 共 {len(files)}", flush=True)
 # 對照 download 的 manifest：下載成功的單元數若多於這裡找到的音檔數，代表有課被漏掉（如未支援副檔名）
 try:
@@ -143,8 +174,14 @@ if backend == "api" and not USE_API:
 # ---- API 路徑 ----
 if backend == "api":
     if not os.environ.get("OPENAI_API_KEY"):
-        print("[需要] 這台沒有可用的本機 GPU，要用 API 轉錄：請設定環境變數 OPENAI_API_KEY 後重跑（約 US$0.006/分鐘），"
-              "或改在有 NVIDIA 顯卡／Apple Silicon Mac 的電腦上跑（那兩種都能免費本機轉錄）。", flush=True)
+        # 訊息分兩種情境：使用者主動 --api（可能明明有 GPU，如 faster-whisper 裝不起來時 README 建議改走 API）
+        # vs 自動偵測無 GPU 退到 API——別對前者說「這台沒有 GPU」（不實、且讓人困惑）
+        if USE_API:
+            print("[需要] 你指定了 --api（雲端轉錄）：請設定環境變數 OPENAI_API_KEY 後重跑（約 US$0.006/分鐘、音檔會上傳 OpenAI）；"
+                  "想改回免費本機轉錄就拿掉 --api（需 NVIDIA 顯卡或 Apple Silicon）。", flush=True)
+        else:
+            print("[需要] 這台沒有可用的本機 GPU，要用 API 轉錄：請設定環境變數 OPENAI_API_KEY 後重跑（約 US$0.006/分鐘），"
+                  "或改在有 NVIDIA 顯卡／Apple Silicon Mac 的電腦上跑（那兩種都能免費本機轉錄）。", flush=True)
         sys.exit(2)
     try:
         from openai import OpenAI

@@ -17,7 +17,7 @@
 name: <kebab-case 英文名>
 description: <什麼情境該觸發——寫給未來的 agent，具體到能判斷「這題用得上/用不上」。⚠️要涵蓋這套方法適用的**產出型任務動詞**（回信/回訊息/寫貼文/排流程/規劃/報價/準備會議…），不要只寫抽象情境框架——否則使用者日常說「幫我回這封詢價 email」時，description 只框在「銷售情境」會對不上、skill 靜靜不觸發>
 type: sop
-value-label: framework-convenience   # 預檢貼的價值標籤：new-knowledge（新知識型）｜framework-convenience（框架便利型）。用來讓使用者知道這 skill 的價值來源，也給融合判「同骨架該不該收斂」的線索
+value-label: framework-convenience   # 預檢貼的價值標籤，落檔只有兩值：new-knowledge（新知識型）｜framework-convenience（框架便利型）。⚠️ 預檢的四分類中「框架便利・易問」**不落檔**（勸退），所以檔案裡的 framework-convenience 必然是「難問」——欄位不再細分，難問/易問只在預檢報告區分。用來讓使用者知道這 skill 的價值來源，也給融合判「同骨架該不該收斂」的線索
 disable-model-invocation: true   # Claude Code 官方欄位：新蒸的 skill 預設不自動觸發。啟用＝人審＋明確確認後由 agent 代辦四動作交易（複製啟用制）：複製進 ~/.claude/skills/（vault 留正本）＋刪生效目錄那份的本行＋INDEX 翻✅已啟用＋commit（見 SKILL.md 安全模型；vault 正本永遠保留本行、保持 inert。不要用自訂欄位當開關，平台不認）
 x-anything2skill: v1             # 出處標記：讓 guard-activation hook 認得「這是本工具蒸的 skill」而只管我們自己的產物（不干擾使用者其他 skill）；平台會忽略此自訂欄位
 source: <作者/講者 - 內容標題（單行、含 YAML 特殊字元要加引號，見下方 frontmatter 安全規則）>

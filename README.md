@@ -4,7 +4,7 @@
 
 Those methods you learned but never really put to use — videos, courses, articles, transcripts — anything2skill distills them into an agent-callable skill (`SKILL.md`), so your AI then does the work **that way, every time** — not its own generic default. Built for people already using (or just starting with) **Claude Code**.
 
-**English** · [中文](#中文-anything2skill) &nbsp;|&nbsp; License: MIT · Author: Dr. Yu-Chieh Chen
+**English** · [中文](#中文-anything2skill) &nbsp;|&nbsp; 🌐 [Landing / 官網](https://anything2skill.pages.dev/) &nbsp;|&nbsp; License: MIT · Author: Dr. Yu-Chieh Chen
 
 > **Honest by design:** it never claims to make your AI "smarter" (we disproved that ourselves). It makes your AI **faithful and consistent** to a method you trust. New skills land **inert** in a local vault and only activate after you review a one-screen card and explicitly confirm.
 
@@ -12,7 +12,7 @@ Those methods you learned but never really put to use — videos, courses, artic
 
 - **Distill**: video (auto download + transcribe), article, transcript, course → a structured skill (steps / checklist / guardrails / verbatim anchors).
 - **Value pre-check + honest label**: before distilling, it tells you where the value comes from — "knowledge an LLM can't generate," or "an LLM knows this too, but it saves you knowing what to ask + gives you consistency." **It talks you out of two kinds**: content with no framework at all, and a method you could just ask for in one line where the AI's default is already good (just ask it). Every other framework is kept — just honestly labeled so you choose.
-- **Anti-bloat fusion**: new content is compared against your existing skill library first — the same teacher told more fully gets **merged deeper**; the **same framework across domains** (coffee quadrants vs. tea quadrants) is **factored into "one framework + per-domain examples"** instead of piling up near-duplicates; rival schools coexist, kept separate; a real conflict pauses for you to choose. **And fusion only ever touches skills it distilled (tagged `x-anything2skill`) — it never reads, merges, or modifies your own hand-made skills.** Your library stays clean after a year.
+- **Anti-bloat fusion**: new content is compared against your existing skill library first — the same teacher told more fully gets **merged deeper**; the **same framework across domains** (coffee quadrants vs. tea quadrants) is **factored into "one framework + per-domain examples"** instead of piling up near-duplicates; rival schools coexist, kept separate; a real conflict pauses for you to choose. **And fusion only ever touches skills it distilled (tagged `x-anything2skill`) — it never uses your own hand-made skills as fusion material, never merges them, never modifies them** (it only ever peeks at a file's frontmatter tag to know it's not ours, then leaves it alone). Your library stays clean after a year.
 
 ## What we don't claim (honesty statement)
 
@@ -28,6 +28,8 @@ So where's the value? In the fact that **most people don't have the time or the 
 A skill earns its keep only when **both** are true:
 1. **There's a method you'd want the AI to follow every time** — steps, criteria, a sequence, guardrails.
 2. **It's not something a one-line question already answers well** — it's specific, counter-intuitive, or your own idiosyncratic way, so just asking would get you nothing, or a generic/wrong answer.
+
+(One more kind qualifies on its own: **proprietary facts/data the AI doesn't know** — exact numbers, lists, your own case data — that's the "new-knowledge" label.)
 
 - ✅ **Great fits**: hands-on how-to courses, technique workshops, a speaker's SOP/playbook, your own method notes — anything with steps, criteria, and guardrails you'd repeat.
 - ⚠️ **AI courses — it depends**: a reusable AI *workflow* or prompt framework → good; general AI *concepts* → poor (the model already knows, and it goes stale fast).
@@ -88,7 +90,7 @@ In one line: this tool **produces** your method library, but the **key to enabli
 
 ## Roadmap
 
-- Phase 2: fact-checking module (Crossref/DOI, academic claims marked verified), book/PDF parsing, landing page & setup wizard.
+- Phase 2: fact-checking module (Crossref/DOI, academic claims marked verified), book/PDF parsing, setup wizard.
 
 ---
 
@@ -104,7 +106,7 @@ In one line: this tool **produces** your method library, but the **key to enabli
 
 - **蒸餾**：影片（自動下載＋轉錄）、文章、逐字稿、課程 → 結構化 skill（步驟／檢核表／禁區／原話錨點）。
 - **價值預檢＋誠實標籤**：蒸之前先告訴你這套框架的價值來源——是「LLM 生不出來的新知識」，還是「LLM 也會、但省你不知道怎麼問＋每次一致」。**兩類會主動勸你別蒸**：完全沒框架的純閒聊，以及一句話就問得到、AI 預設又夠好的通用方法（直接問就好）；其餘框架都留給你，只是老實貼標籤讓你自己選。
-- **融合防通膨**：新內容進來先跟你既有的 skill 庫比對——同一位老師的方法越講越完整就**併進去深化**；**同一套框架套在不同產業（咖啡四象限 vs 茶葉四象限）會抽成「一個框架＋多領域範例」而不是堆一堆近重複**；不同派系的方法並存分流、絕不攪拌；真有衝突（A 派台上報價、B 派台下談）會停下來讓你選。**而且融合只動它自己蒸的 skill（帶 `x-anything2skill` 標記的）——永遠不會讀、不會併、更不會改你原本手作的 skill。**你的 skill 庫用一年還是乾淨的。
+- **融合防通膨**：新內容進來先跟你既有的 skill 庫比對——同一位老師的方法越講越完整就**併進去深化**；**同一套框架套在不同產業（咖啡四象限 vs 茶葉四象限）會抽成「一個框架＋多領域範例」而不是堆一堆近重複**；不同派系的方法並存分流、絕不攪拌；真有衝突（A 派台上報價、B 派台下談）會停下來讓你選。**而且融合只動它自己蒸的 skill（帶 `x-anything2skill` 標記的）——你原本手作的 skill 永遠不會被當融合材料、不會被併、更不會被改**（它只會看一眼檔頭標記確認「不是我們做的」，然後完全不碰）。你的 skill 庫用一年還是乾淨的。
 
 ## 我們不宣稱什麼（誠實聲明）
 
@@ -120,6 +122,8 @@ In one line: this tool **produces** your method library, but the **key to enabli
 **兩個條件都成立，才值得蒸成 skill：**
 1. **裡面有一套你想讓 AI 每次照做的方法**——步驟、判準、流程、禁區。
 2. **這套方法不是一句話就問得出來的**——它夠專屬、夠反直覺、或是你自己獨特的做法，隨口問拿不到，或只會拿到平庸／錯的答案。
+
+（另有一種自己就成立：**含 AI 不知道的獨門事實／數據**——確切數字、名單、你自己的案例數據——那是「新知識型」標籤。）
 
 - ✅ **最適合**：教「怎麼做」的實作課、技術工作坊、講者的 SOP／playbook、你自己的方法筆記——凡是有步驟、判準、流程、檢核、禁區、你會重複做的。
 - ⚠️ **AI 課程看情況**：教「可複用的 AI 操作流程／prompt 框架」→ 適合；教「AI 通用概念知識」→ 不適合（AI 本來就會、還過時得快）。
@@ -180,4 +184,4 @@ git clone https://github.com/Nouischen/anything2skill.git
 
 ## Roadmap（藍圖）
 
-- Phase 2：事實查證模組（Crossref/DOI，學術內容主張標 verified）、書籍/PDF 解析、落地頁與設定精靈。
+- Phase 2：事實查證模組（Crossref/DOI，學術內容主張標 verified）、書籍/PDF 解析、設定精靈。
