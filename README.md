@@ -11,7 +11,7 @@ Those methods you learned but never really put to use — videos, courses, artic
 ## What it does
 
 - **Distill**: video (auto download + transcribe), article, transcript, course → a structured skill (steps / checklist / guardrails / verbatim anchors).
-- **Value pre-check + honest label**: before distilling, it tells you where the value comes from — "knowledge an LLM can't generate," or "an LLM knows this too, but it saves you knowing what to ask + gives you consistency." **Only genuinely framework-less chit-chat gets talked out of.** A useful framework is kept even if it's generic — just honestly labeled so you choose.
+- **Value pre-check + honest label**: before distilling, it tells you where the value comes from — "knowledge an LLM can't generate," or "an LLM knows this too, but it saves you knowing what to ask + gives you consistency." **It talks you out of two kinds**: content with no framework at all, and a method you could just ask for in one line where the AI's default is already good (just ask it). Every other framework is kept — just honestly labeled so you choose.
 - **Anti-bloat fusion**: new content is compared against your existing skill library first — the same teacher told more fully gets **merged deeper**; the **same framework across domains** (coffee quadrants vs. tea quadrants) is **factored into "one framework + per-domain examples"** instead of piling up near-duplicates; rival schools coexist, kept separate; a real conflict pauses for you to choose. **And fusion only ever touches skills it distilled (tagged `x-anything2skill`) — it never reads, merges, or modifies your own hand-made skills.** Your library stays clean after a year.
 
 ## What we don't claim (honesty statement)
@@ -103,7 +103,7 @@ In one line: this tool **produces** your method library, but the **key to enabli
 ## 它做什麼
 
 - **蒸餾**：影片（自動下載＋轉錄）、文章、逐字稿、課程 → 結構化 skill（步驟／檢核表／禁區／原話錨點）。
-- **價值預檢＋誠實標籤**：蒸之前先告訴你這套框架的價值來源——是「LLM 生不出來的新知識」，還是「LLM 也會、但省你不知道怎麼問＋每次一致」。**只有真正沒框架的純閒聊才勸退**；有用的框架就算通用也留給你，只是老實貼標籤讓你自己選。
+- **價值預檢＋誠實標籤**：蒸之前先告訴你這套框架的價值來源——是「LLM 生不出來的新知識」，還是「LLM 也會、但省你不知道怎麼問＋每次一致」。**兩類會主動勸你別蒸**：完全沒框架的純閒聊，以及一句話就問得到、AI 預設又夠好的通用方法（直接問就好）；其餘框架都留給你，只是老實貼標籤讓你自己選。
 - **融合防通膨**：新內容進來先跟你既有的 skill 庫比對——同一位老師的方法越講越完整就**併進去深化**；**同一套框架套在不同產業（咖啡四象限 vs 茶葉四象限）會抽成「一個框架＋多領域範例」而不是堆一堆近重複**；不同派系的方法並存分流、絕不攪拌；真有衝突（A 派台上報價、B 派台下談）會停下來讓你選。**而且融合只動它自己蒸的 skill（帶 `x-anything2skill` 標記的）——永遠不會讀、不會併、更不會改你原本手作的 skill。**你的 skill 庫用一年還是乾淨的。
 
 ## 我們不宣稱什麼（誠實聲明）
